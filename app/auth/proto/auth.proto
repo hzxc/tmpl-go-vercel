@@ -1,0 +1,16 @@
+syntax = "proto3";
+package auth; // proto文件的package
+option go_package="gen/go;authpb";
+
+message LoginRequest {
+    string code = 1;
+}
+
+message LoginResponse {
+    string access_token = 1;
+    int32 expires_in = 2;
+}
+
+service Auth {
+    rpc Login (LoginRequest) returns (LoginResponse);
+}

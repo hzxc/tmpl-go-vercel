@@ -1,0 +1,11 @@
+{
+  "github": {
+    "silent": true
+  },
+  "routes": [
+    {
+      "src": "/api/.*",
+      "dest": "/api/api.go"
+    }
+  ]
+}
