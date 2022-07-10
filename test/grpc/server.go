@@ -4,7 +4,7 @@ import (
 	"log"
 	"net"
 	"tmpl-go-vercel/app/pingpong"
-	pingpongpb "tmpl-go-vercel/app/pingpong/proto/gen/go"
+	pingpongpb "tmpl-go-vercel/gen/go/pingpong/v1"
 
 	"google.golang.org/grpc"
 )
@@ -15,6 +15,6 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pingpongpb.RegisterPingPongServer(s, &pingpong.Service{})
+	pingpongpb.RegisterPingPongServiceServer(s, &pingpong.Service{})
 	s.Serve(lis)
 }

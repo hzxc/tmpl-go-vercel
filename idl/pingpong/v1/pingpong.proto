@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pingpong.v1;
+option go_package="./pingpongpb;pingpongpb";
+
+service PingPongService {
+     rpc PingPong(PingPongRequest) returns (PingPongResponse);
+}
+
+message PingPongRequest { string ping = 1; }
+message PingPongResponse { string pong = 1; }
