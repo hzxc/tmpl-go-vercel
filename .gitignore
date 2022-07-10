@@ -106,8 +106,12 @@ dist
 .vercel
 
 # ###
-cache
-install-state.gz
-.vscode
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
 
-
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.pnp.cjs
