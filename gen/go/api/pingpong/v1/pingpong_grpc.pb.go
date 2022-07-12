@@ -31,7 +31,7 @@ func NewPingPongServiceClient(cc grpc.ClientConnInterface) PingPongServiceClient
 
 func (c *pingPongServiceClient) PingPong(ctx context.Context, in *PingPongRequest, opts ...grpc.CallOption) (*PingPongResponse, error) {
 	out := new(PingPongResponse)
-	err := c.cc.Invoke(ctx, "/pingpong.v1.PingPongService/PingPong", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.pingpong.v1.PingPongService/PingPong", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func _PingPongService_PingPong_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pingpong.v1.PingPongService/PingPong",
+		FullMethod: "/api.pingpong.v1.PingPongService/PingPong",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PingPongServiceServer).PingPong(ctx, req.(*PingPongRequest))
@@ -88,7 +88,7 @@ func _PingPongService_PingPong_Handler(srv interface{}, ctx context.Context, dec
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var PingPongService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pingpong.v1.PingPongService",
+	ServiceName: "api.pingpong.v1.PingPongService",
 	HandlerType: (*PingPongServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -97,5 +97,5 @@ var PingPongService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "pingpong/v1/pingpong.proto",
+	Metadata: "api/pingpong/v1/pingpong.proto",
 }

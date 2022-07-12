@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package pingpong.v1;
-option go_package="./pingpongpb;pingpongpb";
+package api.pingpong.v1;
+option go_package="./;pingpongpb";
 
 service PingPongService {
      rpc PingPong(PingPongRequest) returns (PingPongResponse);
