@@ -5,7 +5,7 @@ import (
 	"log"
 	"testing"
 
-	pingpongpb "tmpl-go-vercel/gen/go/pingpong/v1"
+	pingpongpb "tmpl-go-vercel/gen/go/api/pingpong/v1"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

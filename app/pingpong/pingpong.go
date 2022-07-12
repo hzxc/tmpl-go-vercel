@@ -2,7 +2,7 @@ package pingpong
 
 import (
 	"context"
-	pingpongpb "tmpl-go-vercel/gen/go/pingpong/v1"
+	pingpongpb "tmpl-go-vercel/gen/go/api/pingpong/v1"
 )
 
 type Service struct {
