@@ -17,6 +17,7 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 )
 
 var (
@@ -77,7 +78,7 @@ func (o ServerOptions) Config() (*server.Config, error) {
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.StreamServerInterceptor(zapLogger, opts...),
 			grpc_zap.PayloadStreamServerInterceptor(zapLogger, payloadDecider),
-			grpc_cors.StreamServerInterceptor(grpc_cors.OriginHost("*"), grpc_cors.AllowSubdomain(true)),
+			grpc_cors.StreamServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
 			grpc_security.StreamServerInterceptor(),
 			grpc_recovery.StreamServerInterceptor(),
 		)),
@@ -85,7 +86,7 @@ func (o ServerOptions) Config() (*server.Config, error) {
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.UnaryServerInterceptor(zapLogger, opts...),
 			grpc_zap.PayloadUnaryServerInterceptor(zapLogger, payloadDecider),
-			grpc_cors.UnaryServerInterceptor(grpc_cors.OriginHost("*"), grpc_cors.AllowSubdomain(true)),
+			grpc_cors.UnaryServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
 			grpc_security.UnaryServerInterceptor(),
 			grpc_recovery.UnaryServerInterceptor(),
 		)),
@@ -109,9 +110,9 @@ func (o ServerOptions) New() (Handler, error) {
 	s := server.NewGRPCServer(false)
 
 	// proto.RegisterHelloServiceServer(s, &proto.Service{})
-	// return grpcweb.WrapServer(s, grpcweb.WithOriginFunc(func(origin string) bool {
-	// 	// Allow all origins, DO NOT do this in production
-	// 	return true
-	// }), grpcweb.WithCorsForRegisteredEndpointsOnly(false), grpcweb.WithAllowedRequestHeaders([]string{"*"}))
-	return s, nil
+	return grpcweb.WrapServer(s, grpcweb.WithOriginFunc(func(origin string) bool {
+		// Allow all origins, DO NOT do this in production
+		return true
+	}), grpcweb.WithCorsForRegisteredEndpointsOnly(false), grpcweb.WithAllowedRequestHeaders([]string{"*"})), nil
+	// return grpcweb.WrapServer(s), nil
 }
