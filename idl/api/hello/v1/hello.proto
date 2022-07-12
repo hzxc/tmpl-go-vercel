@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package api.hello.v1;
+option go_package="./hellopb;hellopb";
+
+service HelloService {
+     rpc Intro(IntroRequest) returns (IntroResponse) {}
+   }
+
+message IntroRequest {
+     string name = 1;
+}
+
+message IntroResponse {
+     string intro = 1;
+}

@@ -5,7 +5,7 @@ import (
 	"log"
 	"testing"
 
-	pingpongpb "tmpl-go-vercel/gen/go/api/pingpong/v1"
+	proto "tmpl-go-vercel/gen/go/api/hello/v1"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -17,8 +17,8 @@ func Test_GrpcClient(t *testing.T) {
 	if err != nil {
 		log.Fatalf("can not connect server: %v", err)
 	}
-	cli := pingpongpb.NewPingPongServiceClient(conn)
-	resp, err := cli.PingPong(context.Background(), &pingpongpb.PingPongRequest{Ping: "ping"})
+	cli := proto.NewHelloServiceClient(conn)
+	resp, err := cli.Intro(context.Background(), &proto.IntroRequest{Name: "foo"})
 
 	if err != nil {
 		log.Fatalf("can not call Ping: %v", err)
