@@ -19,6 +19,9 @@ func init() {
 	zap.ReplaceGlobals(zapLogger)
 
 	o := grpc.NewServerOptions(false, zapLogger)
+	o.RecommendedOptions.Cors.AllowSubdomain = true
+	o.RecommendedOptions.Cors.OriginHost = "*"
+	o.RecommendedOptions.Cors.Enable = true
 
 	grpcSrv, err := o.New()
 	if err != nil {
