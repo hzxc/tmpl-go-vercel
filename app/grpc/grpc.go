@@ -20,7 +20,6 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	"github.com/improbable-eng/grpc-web/go/grpcweb"
 )
 
 var (
@@ -121,5 +120,5 @@ func (o ServerOptions) New() (Handler, error) {
 	// 	// Allow all origins, DO NOT do this in production
 	// 	return true
 	// }), grpcweb.WithCorsForRegisteredEndpointsOnly(false), grpcweb.WithAllowedRequestHeaders([]string{"*"})), nil
-	return grpcweb.WrapServer(s), nil
+	return s, nil
 }
