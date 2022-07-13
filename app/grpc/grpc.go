@@ -74,21 +74,23 @@ func (o ServerOptions) Config() (*server.Config, error) {
 	grpc_zap.ReplaceGrpcLoggerV2(zapLogger)
 
 	config.GRPCServerOption(
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.StreamServerInterceptor(zapLogger, opts...),
-			grpc_zap.PayloadStreamServerInterceptor(zapLogger, payloadDecider),
-			grpc_cors.StreamServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
-			grpc_security.StreamServerInterceptor(),
-			grpc_recovery.StreamServerInterceptor(),
-		)),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			grpc_ctxtags.UnaryServerInterceptor(),
+			// grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.UnaryServerInterceptor(zapLogger, opts...),
 			grpc_zap.PayloadUnaryServerInterceptor(zapLogger, payloadDecider),
 			grpc_cors.UnaryServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
 			grpc_security.UnaryServerInterceptor(),
 			grpc_recovery.UnaryServerInterceptor(),
+		)),
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			grpc_ctxtags.StreamServerInterceptor(),
+			// grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			grpc_zap.StreamServerInterceptor(zapLogger, opts...),
+			grpc_zap.PayloadStreamServerInterceptor(zapLogger, payloadDecider),
+			grpc_cors.StreamServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
+			grpc_security.StreamServerInterceptor(),
+			grpc_recovery.StreamServerInterceptor(),
 		)),
 	)
 

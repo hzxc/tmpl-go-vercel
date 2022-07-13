@@ -39,7 +39,7 @@ func StreamServerInterceptor(opts ...Option) grpc.StreamServerInterceptor {
 
 func setCORSHeaders(ctx context.Context, opts *options) error {
 	headers := map[string]string{
-		"access-control-allow-methods": "POST,GET,OPTIONS,PUT,DELETE",
+		"access-control-allow-methods": "POST,GET,OPTIONS,PUT,DELETE,PATCH",
 	}
 	var md metadata.MD
 	if m, ok := metadata.FromIncomingContext(ctx); ok {
