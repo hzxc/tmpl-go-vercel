@@ -3,13 +3,12 @@ package hello
 import (
 	"context"
 	"fmt"
-	"tmpl-go-vercel/app/grpc"
 	proto "tmpl-go-vercel/gen/go/api/hello/v1"
 )
 
-func init() {
-	grpc.GRPCEndpoints.Register(proto.RegisterHelloServiceServer, &Service{})
-}
+// func init() {
+// 	grpc.GRPCEndpoints.Register(proto.RegisterHelloServiceServer, &Service{})
+// }
 
 type Service struct {
 	proto.UnimplementedHelloServiceServer

@@ -26,6 +26,7 @@ func (r *GRPCRegistry) Register(fn, server interface{}) {
 
 func (r GRPCRegistry) ApplyTo(srv *grpc.Server) error {
 	for _, ep := range r {
+
 		zap.S().Infof("Registering gRPC server: %s", reflect.TypeOf(ep.Server))
 
 		fn := reflect.ValueOf(ep.Register)

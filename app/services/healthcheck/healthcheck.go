@@ -2,15 +2,10 @@ package healthcheck
 
 import (
 	"context"
-	"tmpl-go-vercel/app/grpc"
 	proto "tmpl-go-vercel/gen/go/api/healthcheck/v1"
 
 	v "gomodules.xyz/x/version"
 )
-
-func init() {
-	grpc.GRPCEndpoints.Register(proto.RegisterStatusServiceServer, &Service{})
-}
 
 type Service struct {
 	proto.UnimplementedStatusServiceServer
