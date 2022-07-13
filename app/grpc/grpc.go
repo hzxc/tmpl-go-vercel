@@ -6,9 +6,7 @@ import (
 	"tmpl-go-vercel/app/grpc/addons/endpoints"
 	"tmpl-go-vercel/app/grpc/addons/server"
 	"tmpl-go-vercel/app/grpc/addons/server/options"
-	"tmpl-go-vercel/app/services/healthcheck"
 	"tmpl-go-vercel/app/services/hello"
-	healthcheckpb "tmpl-go-vercel/gen/go/api/healthcheck/v1"
 	hellopb "tmpl-go-vercel/gen/go/api/hello/v1"
 
 	// "tmpl-go-vercel/app/services/hello"
@@ -54,9 +52,9 @@ func (o ServerOptions) Config() (*server.Config, error) {
 		return nil, err
 	}
 
-	// GRPCEndpoints.Register(hellopb.RegisterHelloServiceServer, &hello.Service{})
-	// GRPCEndpoints.Register(proto.RegisterHelloServiceServer, &Service{})
-	// config.SetGRPCRegistry(GRPCEndpoints)
+	GRPCEndpoints.Register(hellopb.RegisterHelloServiceServer, &hello.Service{})
+	// GRPCEndpoints.Register(healthcheckpb.RegisterHelloServiceServer, &healthcheck.Service{})
+	config.SetGRPCRegistry(GRPCEndpoints)
 
 	opts := []grpc_zap.Option{
 		grpc_zap.WithDecider(func(methodFullName string, err error) bool {
@@ -118,8 +116,8 @@ func (o ServerOptions) New() (Handler, error) {
 	}
 
 	s := server.NewGRPCServer(false)
-	hellopb.RegisterHelloServiceServer(s, &hello.Service{})
-	healthcheckpb.RegisterStatusServiceServer(s, &healthcheck.Service{})
+	// hellopb.RegisterHelloServiceServer(s, &hello.Service{})
+	// healthcheckpb.RegisterStatusServiceServer(s, &healthcheck.Service{})
 	// return grpcweb.WrapServer(s, grpcweb.WithOriginFunc(func(origin string) bool {
 	// 	// Allow all origins, DO NOT do this in production
 	// 	return true

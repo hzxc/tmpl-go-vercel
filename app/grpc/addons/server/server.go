@@ -89,7 +89,7 @@ func (s *Server) NewGRPCServer(useTLS bool) *grpc.Server {
 		s.grpcOptions = append(s.grpcOptions, grpc.Creds(creds))
 	}
 	gRPCServer = grpc.NewServer(s.grpcOptions...)
-	// s.grpcRegistry.ApplyTo(gRPCServer)
+	s.grpcRegistry.ApplyTo(gRPCServer)
 	return gRPCServer
 }
 
