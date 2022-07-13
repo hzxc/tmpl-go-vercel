@@ -15,7 +15,7 @@ const (
 )
 
 const (
-	Key           = "GRPC_ENV"
+	Key           = "VERCEL_ENV"
 	ProdApiServer = "https://tmpl-go-vercel.vercel.app"
 	DevApiServer  = "https://tmpl-go-vercel.vercel.app"
 )

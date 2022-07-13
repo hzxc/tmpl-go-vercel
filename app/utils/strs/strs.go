@@ -1,4 +1,4 @@
-package strs
+package utilstrs
 
 import "strings"
 
