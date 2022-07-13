@@ -5,10 +5,15 @@ import (
 	proto "tmpl-go-vercel/gen/go/api/healthcheck/v1"
 
 	v "gomodules.xyz/x/version"
+	"google.golang.org/grpc"
 )
 
 type Service struct {
 	proto.UnimplementedStatusServiceServer
+}
+
+func Register(s *grpc.Server) {
+	proto.RegisterStatusServiceServer(s, &Service{})
 }
 
 func (s *Service) Status(ctx context.Context, req *proto.StatusRequest) (*proto.StatusResponse, error) {

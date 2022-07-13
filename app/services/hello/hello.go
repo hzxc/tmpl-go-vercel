@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	proto "tmpl-go-vercel/gen/go/api/hello/v1"
+
+	"google.golang.org/grpc"
 )
 
 // func init() {
@@ -12,6 +14,10 @@ import (
 
 type Service struct {
 	proto.UnimplementedHelloServiceServer
+}
+
+func Register(s *grpc.Server) {
+	proto.RegisterHelloServiceServer(s, &Service{})
 }
 
 func (s *Service) Intro(ctx context.Context, req *proto.IntroRequest) (*proto.IntroResponse, error) {
