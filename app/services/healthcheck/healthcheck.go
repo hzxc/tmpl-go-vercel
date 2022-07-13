@@ -17,6 +17,7 @@ type Service struct {
 func (s *Service) Status(ctx context.Context, req *proto.StatusRequest) (*proto.StatusResponse, error) {
 	return &proto.StatusResponse{
 		Version: &proto.Version{
+			Name:            "VercelGo",
 			Version:         "Version",
 			VersionStrategy: "VersionStrategy",
 			CommitHash:      "CommitHash",

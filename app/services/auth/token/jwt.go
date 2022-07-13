@@ -4,7 +4,7 @@ import (
 	"crypto/rsa"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 // JWTTokenGen generates a JWT token.
@@ -24,13 +24,14 @@ func NewJWTTokenGen(issuer string, privateKey *rsa.PrivateKey) *JWTTokenGen {
 }
 
 // GenerateToken generates a token.
-func (t *JWTTokenGen) GenerateToken(accountID string, expire time.Duration) (string, error) {
-	nowSec := t.nowFunc().Unix()
-	tkn := jwt.NewWithClaims(jwt.SigningMethodRS512, jwt.StandardClaims{
+func (t *JWTTokenGen) GenerateToken(sub string, expire time.Duration) (string, error) {
+	t.nowFunc()
+	tkn := jwt.NewWithClaims(jwt.SigningMethodRS512, jwt.RegisteredClaims{
 		Issuer:    t.issuer,
-		IssuedAt:  nowSec,
-		ExpiresAt: nowSec + int64(expire.Seconds()),
-		Subject:   accountID,
+		IssuedAt:  jwt.NewNumericDate(t.nowFunc()),
+		NotBefore: jwt.NewNumericDate(t.nowFunc()),
+		ExpiresAt: jwt.NewNumericDate(t.nowFunc().Add(expire)),
+		Subject:   sub,
 	})
 
 	return tkn.SignedString(t.privateKey)

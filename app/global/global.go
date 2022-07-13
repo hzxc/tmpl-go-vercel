@@ -25,6 +25,7 @@ type MysqlConfig struct {
 
 var (
 	Config    *GlobalConfig
+	PublicKey *rsa.PublicKey
 	PrivKey   *rsa.PrivateKey
 	ZapLogger *zap.Logger
 )

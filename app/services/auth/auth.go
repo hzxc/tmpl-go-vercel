@@ -5,7 +5,7 @@ import (
 	"time"
 	"tmpl-go-vercel/app/global"
 	"tmpl-go-vercel/app/grpc"
-	"tmpl-go-vercel/app/shared/auth/token"
+	"tmpl-go-vercel/app/services/auth/token"
 
 	proto "tmpl-go-vercel/gen/go/api/auth/v1"
 
