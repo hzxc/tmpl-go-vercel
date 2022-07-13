@@ -17,10 +17,8 @@ limitations under the License.
 package server
 
 import (
-	"tmpl-go-vercel/app/grpc/addons/cors"
-	"tmpl-go-vercel/app/grpc/addons/endpoints"
+	"tmpl-go-vercel/app/grpc/endpoints"
 
-	gwrt "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
 
@@ -35,12 +33,9 @@ type Config struct {
 	CORSOriginHost     string
 	CORSAllowSubdomain bool
 
-	grpcRegistry  endpoints.GRPCRegistry
-	proxyRegistry endpoints.ProxyRegistry
-	corsRegistry  cors.PatternRegistry
+	grpcRegistry endpoints.GRPCRegistry
 
-	grpcOptions  []grpc.ServerOption
-	gwMuxOptions []gwrt.ServeMuxOption
+	grpcOptions []grpc.ServerOption
 }
 
 func NewConfig() *Config {
@@ -55,20 +50,8 @@ func (s *Config) SetGRPCRegistry(reg endpoints.GRPCRegistry) {
 	s.grpcRegistry = reg
 }
 
-func (s *Config) SetProxyRegistry(reg endpoints.ProxyRegistry) {
-	s.proxyRegistry = reg
-}
-
-func (s *Config) SetCORSRegistry(reg cors.PatternRegistry) {
-	s.corsRegistry = reg
-}
-
 func (s *Config) GRPCServerOption(opt ...grpc.ServerOption) {
 	s.grpcOptions = opt
-}
-
-func (s *Config) GatewayMuxOption(opt ...gwrt.ServeMuxOption) {
-	s.gwMuxOptions = opt
 }
 
 func (c Config) New() (*Server, error) {

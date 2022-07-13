@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"tmpl-go-vercel/app/grpc"
 
+	_ "tmpl-go-vercel/app/services"
+
 	"go.uber.org/zap"
 )
 
@@ -45,8 +47,5 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	zap.L().Info(r.Host)
 	zap.L().Info(r.RemoteAddr)
 	zap.L().Info(r.RequestURI)
-	// hd, _ := json.Marshal(r.Header)
-	// zap.L().Info(string(hd))
-	// handler.ServeHTTP(w, r)
 	grpcSrv.ServeHTTP(w, r)
 }

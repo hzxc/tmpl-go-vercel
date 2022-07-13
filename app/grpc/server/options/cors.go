@@ -17,7 +17,7 @@ limitations under the License.
 package options
 
 import (
-	"tmpl-go-vercel/app/grpc/addons/server"
+	"tmpl-go-vercel/app/grpc/server"
 )
 
 type CorsOptions struct {

@@ -3,17 +3,14 @@ package grpc
 import (
 	"context"
 	"net/http"
-	"tmpl-go-vercel/app/grpc/addons/server"
-	"tmpl-go-vercel/app/grpc/addons/server/options"
-	"tmpl-go-vercel/app/services/healthcheck"
-	"tmpl-go-vercel/app/services/hello"
-	healthcheckpb "tmpl-go-vercel/gen/go/api/healthcheck/v1"
-	hellopb "tmpl-go-vercel/gen/go/api/hello/v1"
+	"tmpl-go-vercel/app/grpc/endpoints"
+	"tmpl-go-vercel/app/grpc/server"
+	"tmpl-go-vercel/app/grpc/server/options"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	grpc_security "tmpl-go-vercel/app/grpc/addons/security"
+	grpc_security "tmpl-go-vercel/app/grpc/security"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -23,7 +20,8 @@ import (
 )
 
 var (
-	zapLogger *zap.Logger
+	GRPCEndpoints = endpoints.GRPCRegistry{}
+	zapLogger     *zap.Logger
 )
 
 type Handler http.Handler
@@ -49,9 +47,7 @@ func (o ServerOptions) Config() (*server.Config, error) {
 		return nil, err
 	}
 
-	// GRPCEndpoints.Register(hellopb.RegisterHelloServiceServer, &hello.Service{})
-	// GRPCEndpoints.Register(healthcheckpb.RegisterHelloServiceServer, &healthcheck.Service{})
-	// config.SetGRPCRegistry(GRPCEndpoints)
+	config.SetGRPCRegistry(GRPCEndpoints)
 
 	opts := []grpc_zap.Option{
 		grpc_zap.WithDecider(func(methodFullName string, err error) bool {
@@ -113,8 +109,7 @@ func (o ServerOptions) New() (Handler, error) {
 	}
 
 	s := server.NewGRPCServer(false)
-	hellopb.RegisterHelloServiceServer(s, &hello.Service{})
-	healthcheckpb.RegisterStatusServiceServer(s, &healthcheck.Service{})
+
 	return grpcweb.WrapServer(s, grpcweb.WithOriginFunc(func(origin string) bool {
 		// Allow all origins, DO NOT do this in production
 		if origin == "http://localhost:1234" {
