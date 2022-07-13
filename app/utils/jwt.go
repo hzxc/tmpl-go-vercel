@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func ConvKey(key string) *rsa.PrivateKey {
+func ConvPrivKey(key string) *rsa.PrivateKey {
 	keyBytes, err := base64.StdEncoding.DecodeString(key)
 	if err != nil {
 		zap.L().Fatal("cannot decode private key", zap.Error(err))
@@ -20,4 +20,18 @@ func ConvKey(key string) *rsa.PrivateKey {
 	}
 
 	return privKey
+}
+
+func ConvPubKey(key string) *rsa.PublicKey {
+	keyBytes, err := base64.StdEncoding.DecodeString(key)
+	if err != nil {
+		zap.L().Fatal("cannot decode public key", zap.Error(err))
+	}
+
+	pubKey, err := jwt.ParseRSAPublicKeyFromPEM(keyBytes)
+	if err != nil {
+		zap.L().Fatal("cannot parse public key", zap.Error(err))
+	}
+
+	return pubKey
 }

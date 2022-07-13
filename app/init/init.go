@@ -33,6 +33,8 @@ func init() {
 	global.ZapLogger = zapLogger
 
 	fmt.Println("init jwt")
-	KeyStr := os.Getenv("JWT_PRIVATE_KEY")
-	global.PrivKey = jwt.ConvKey(KeyStr)
+	PrivKeyEnv := os.Getenv("JWT_PRIVATE_KEY")
+	global.PrivKey = jwt.ConvPrivKey(PrivKeyEnv)
+	PubKeyEnv := os.Getenv("JWT_PUBLIC_KEY")
+	global.PubKey = jwt.ConvPubKey(PubKeyEnv)
 }

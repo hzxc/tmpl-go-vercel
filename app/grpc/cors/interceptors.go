@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	_env "tmpl-go-vercel/app/utils/env"
+	"tmpl-go-vercel/app/global"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -65,7 +65,7 @@ func setCORSHeaders(ctx context.Context, opts *options) error {
 		if !ok {
 			return errors.New("CORS request from prohibited domain" + origin)
 		}
-		if !_env.FromHost().DevMode() {
+		if !global.Config.Dev {
 			u.Scheme = "https"
 		}
 		headers["access-control-allow-origin"] = u.String()

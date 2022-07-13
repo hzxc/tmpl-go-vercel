@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"net/http"
+	"tmpl-go-vercel/app/global"
 	"tmpl-go-vercel/app/grpc/endpoints"
 	"tmpl-go-vercel/app/grpc/server"
 	"tmpl-go-vercel/app/grpc/server/options"
@@ -12,10 +13,13 @@ import (
 
 	grpc_security "tmpl-go-vercel/app/grpc/security"
 
+	grpc_auth "tmpl-go-vercel/app/grpc/auth"
+
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 )
 
@@ -78,7 +82,9 @@ func (o ServerOptions) Config() (*server.Config, error) {
 			// grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_zap.UnaryServerInterceptor(zapLogger, opts...),
 			grpc_zap.PayloadUnaryServerInterceptor(zapLogger, payloadDecider),
+			grpc_auth.UnaryServerInterceptor(grpc_auth.PubKey(global.PubKey)),
 			// grpc_cors.UnaryServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
+
 			grpc_security.UnaryServerInterceptor(),
 			grpc_recovery.UnaryServerInterceptor(),
 		)),
@@ -87,6 +93,7 @@ func (o ServerOptions) Config() (*server.Config, error) {
 			// grpc_ctxtags.StreamServerInterceptor(),
 			grpc_zap.StreamServerInterceptor(zapLogger, opts...),
 			grpc_zap.PayloadStreamServerInterceptor(zapLogger, payloadDecider),
+			grpc_auth.StreamServerInterceptor(grpc_auth.PubKey(global.PubKey)),
 			// grpc_cors.StreamServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
 			grpc_security.StreamServerInterceptor(),
 			grpc_recovery.StreamServerInterceptor(),
