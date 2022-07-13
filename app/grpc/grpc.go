@@ -7,6 +7,8 @@ import (
 	"tmpl-go-vercel/app/grpc/addons/server/options"
 	"tmpl-go-vercel/app/services/healthcheck"
 	"tmpl-go-vercel/app/services/hello"
+	healthcheckpb "tmpl-go-vercel/gen/go/api/healthcheck/v1"
+	hellopb "tmpl-go-vercel/gen/go/api/hello/v1"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -112,8 +114,8 @@ func (o ServerOptions) New() (Handler, error) {
 	}
 
 	s := server.NewGRPCServer(false)
-	hello.Register(s)
-	healthcheck.Register(s)
+	hellopb.RegisterHelloServiceServer(s, &hello.Service{})
+	healthcheckpb.RegisterStatusServiceServer(s, &healthcheck.Service{})
 
 	// return grpcweb.WrapServer(s, grpcweb.WithOriginFunc(func(origin string) bool {
 	// 	// Allow all origins, DO NOT do this in production
