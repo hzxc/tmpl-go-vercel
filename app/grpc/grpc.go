@@ -13,13 +13,13 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	grpc_cors "tmpl-go-vercel/app/grpc/addons/cors"
 	grpc_security "tmpl-go-vercel/app/grpc/addons/security"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 )
 
 var (
@@ -78,20 +78,20 @@ func (o ServerOptions) Config() (*server.Config, error) {
 
 	config.GRPCServerOption(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			grpc_ctxtags.UnaryServerInterceptor(),
-			// grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			// grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_zap.UnaryServerInterceptor(zapLogger, opts...),
 			grpc_zap.PayloadUnaryServerInterceptor(zapLogger, payloadDecider),
-			grpc_cors.UnaryServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
+			// grpc_cors.UnaryServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
 			grpc_security.UnaryServerInterceptor(),
 			grpc_recovery.UnaryServerInterceptor(),
 		)),
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-			grpc_ctxtags.StreamServerInterceptor(),
-			// grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			// grpc_ctxtags.StreamServerInterceptor(),
 			grpc_zap.StreamServerInterceptor(zapLogger, opts...),
 			grpc_zap.PayloadStreamServerInterceptor(zapLogger, payloadDecider),
-			grpc_cors.StreamServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
+			// grpc_cors.StreamServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
 			grpc_security.StreamServerInterceptor(),
 			grpc_recovery.StreamServerInterceptor(),
 		)),
@@ -115,10 +115,13 @@ func (o ServerOptions) New() (Handler, error) {
 	s := server.NewGRPCServer(false)
 	hellopb.RegisterHelloServiceServer(s, &hello.Service{})
 	healthcheckpb.RegisterStatusServiceServer(s, &healthcheck.Service{})
-
-	// return grpcweb.WrapServer(s, grpcweb.WithOriginFunc(func(origin string) bool {
-	// 	// Allow all origins, DO NOT do this in production
-	// 	return true
-	// }), grpcweb.WithCorsForRegisteredEndpointsOnly(false), grpcweb.WithAllowedRequestHeaders([]string{"*"})), nil
-	return s, nil
+	return grpcweb.WrapServer(s, grpcweb.WithOriginFunc(func(origin string) bool {
+		// Allow all origins, DO NOT do this in production
+		if origin == "http://localhost:1234" {
+			return true
+		} else {
+			return false
+		}
+	})), nil
+	// return s, nil
 }
