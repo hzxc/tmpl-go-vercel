@@ -46,27 +46,14 @@ func (a AccountID) String() string {
 
 type accountIDKey struct{}
 
-func (i *interceptor) HandleReq(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-
-	tkn, err := tokenFromContext(ctx)
-	if err != nil {
-		return nil, status.Error(codes.Unauthenticated, "")
-	}
-
-	aid, err := i.verifier.Verify(tkn)
-	if err != nil {
-		return nil, status.Errorf(codes.Unauthenticated, "token not valid: %v", err)
-	}
-
-	return handler(ContextWithAccountID(ctx, AccountID(aid)), req)
-}
-
 func tokenFromContext(c context.Context) (string, error) {
-	unauthenticated := status.Error(codes.Unauthenticated, "")
+	unauthenticated := status.Error(codes.Unauthenticated, "token invalid")
 	m, ok := metadata.FromIncomingContext(c)
 	if !ok {
 		return "", unauthenticated
 	}
+
+	// zap.L().Debug("debug", zap.Any("metadata", m))
 
 	tkn := ""
 	for _, v := range m[authorizationHeader] {
@@ -92,22 +79,36 @@ func AccountIDFromContext(c context.Context) (AccountID, error) {
 	v := c.Value(accountIDKey{})
 	aid, ok := v.(AccountID)
 	if !ok {
-		return "", status.Error(codes.Unauthenticated, "")
+		return "", status.Error(codes.Unauthenticated, codes.Unauthenticated.String())
 	}
 	return aid, nil
 }
 
 // UnaryServerInterceptor returns a new unary server interceptor for OpenTracing.
 func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
+
 	o := evaluateOptions(opts)
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-		aid, err := auth(ctx, o)
-		if err != nil {
-			// return nil, err
-			return nil, status.Error(codes.Unauthenticated, "token not valid")
+		// zap.L().Debug("debug", zap.Any("fullmethod", info.FullMethod))
+		useAuth := false
+		// zap.L().Debug("debug", zap.Any("options", o.authList[]))
+		for _, a := range *o.authList {
+			if a == info.FullMethod {
+				useAuth = true
+				break
+			}
+		}
+		if useAuth {
+			aid, err := auth(ctx, o)
+			if err != nil {
+				// return nil, err
+				return nil, status.Error(codes.Unauthenticated, err.Error())
+			}
+
+			return handler(ContextWithAccountID(ctx, AccountID(aid)), req)
 		}
 
-		return handler(ContextWithAccountID(ctx, AccountID(aid)), req)
+		return handler(ctx, req)
 	}
 }
 
@@ -115,23 +116,36 @@ func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
 func StreamServerInterceptor(opts ...Option) grpc.StreamServerInterceptor {
 	o := evaluateOptions(opts)
 	return func(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
-		w := wrapper_stream.NewStreamContextWrapper(stream)
+		useAuth := false
+		// zap.L().Debug("debug", zap.Any("options", o.authList))
+		for _, a := range *o.authList {
+			if a == info.FullMethod {
+				useAuth = true
+				break
+			}
+		}
+		if useAuth {
+			w := wrapper_stream.NewStreamContextWrapper(stream)
 
-		aid, err := auth(w.Context(), o)
+			aid, err := auth(w.Context(), o)
 
-		if err != nil {
-			return status.Error(codes.Unauthenticated, "token not valid")
+			if err != nil {
+				return status.Error(codes.Unauthenticated, err.Error())
+			}
+
+			ctx := ContextWithAccountID(stream.Context(), AccountID(aid))
+
+			w.SetContext(ctx)
+			return handler(srv, w)
 		}
 
-		ctx := ContextWithAccountID(stream.Context(), AccountID(aid))
-
-		w.SetContext(ctx)
-		return handler(srv, w)
+		return handler(srv, stream)
 	}
 }
 
 func auth(ctx context.Context, opts *options) (string, error) {
 	i := Interceptor(opts.pubKey)
+
 	tkn, err := tokenFromContext(ctx)
 	if err != nil {
 		return "", err
@@ -139,7 +153,7 @@ func auth(ctx context.Context, opts *options) (string, error) {
 
 	aid, err := i.verifier.Verify(tkn)
 	if err != nil {
-		return "", err
+		return "", status.Error(codes.Unauthenticated, "token invalid")
 	}
 
 	return aid, nil

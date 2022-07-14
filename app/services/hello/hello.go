@@ -9,6 +9,8 @@ import (
 
 func init() {
 	grpc.GRPCEndpoints.Register(proto.RegisterHelloServiceServer, &Service{})
+	grpc.GRPCAuthList = append(grpc.GRPCAuthList,
+		fmt.Sprintf("/%s/Intro", proto.HelloService_ServiceDesc.ServiceName))
 }
 
 type Service struct {
@@ -16,6 +18,7 @@ type Service struct {
 }
 
 func (s *Service) Intro(ctx context.Context, req *proto.IntroRequest) (*proto.IntroResponse, error) {
+
 	return &proto.IntroResponse{
 		Intro: fmt.Sprintf("hello, %s!", req.Name),
 	}, nil

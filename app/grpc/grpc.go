@@ -25,6 +25,7 @@ import (
 
 var (
 	GRPCEndpoints = endpoints.GRPCRegistry{}
+	GRPCAuthList  = []string{}
 	zapLogger     *zap.Logger
 )
 
@@ -82,7 +83,7 @@ func (o ServerOptions) Config() (*server.Config, error) {
 			// grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_zap.UnaryServerInterceptor(zapLogger, opts...),
 			grpc_zap.PayloadUnaryServerInterceptor(zapLogger, payloadDecider),
-			grpc_auth.UnaryServerInterceptor(grpc_auth.PubKey(global.PubKey)),
+			grpc_auth.UnaryServerInterceptor(grpc_auth.PubKey(global.PubKey), grpc_auth.AuthList(&GRPCAuthList)),
 			// grpc_cors.UnaryServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
 
 			grpc_security.UnaryServerInterceptor(),
@@ -93,7 +94,7 @@ func (o ServerOptions) Config() (*server.Config, error) {
 			// grpc_ctxtags.StreamServerInterceptor(),
 			grpc_zap.StreamServerInterceptor(zapLogger, opts...),
 			grpc_zap.PayloadStreamServerInterceptor(zapLogger, payloadDecider),
-			grpc_auth.StreamServerInterceptor(grpc_auth.PubKey(global.PubKey)),
+			grpc_auth.StreamServerInterceptor(grpc_auth.PubKey(global.PubKey), grpc_auth.AuthList(&GRPCAuthList)),
 			// grpc_cors.StreamServerInterceptor(grpc_cors.OriginHost(config.CORSOriginHost), grpc_cors.AllowSubdomain(config.CORSAllowSubdomain)),
 			grpc_security.StreamServerInterceptor(),
 			grpc_recovery.StreamServerInterceptor(),
