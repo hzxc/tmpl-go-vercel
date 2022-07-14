@@ -7,9 +7,13 @@ import (
 )
 
 type Model struct {
-	Symbol  string `json:"symbol"`
-	Price   string `json:"price"`
-	Weather string
+	Bns     []Bn   `json:"bns"`
+	Weather string `json:"weather"`
+}
+
+type Bn struct {
+	Symbol string `json:"symbol"`
+	Price  string `json:"price"`
 }
 
 func Awesome(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +25,7 @@ func Awesome(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
-	model := &Model{}
+	model := &Model{Bns: []Bn{}}
 	binanceApi := "https://api.binance.com/api/v3/ticker/price?symbols=[%22BTCUSDT%22,%22ETHUSDT%22]"
 	weatherApi := "https://wttr.in/?format=1"
 
@@ -32,7 +36,7 @@ func Awesome(w http.ResponseWriter, r *http.Request) {
 		goto ERR
 	}
 
-	json.Unmarshal(body, &model)
+	json.Unmarshal(body, &model.Bns)
 
 	if resp, err = http.Get(weatherApi); err != nil {
 		goto ERR
