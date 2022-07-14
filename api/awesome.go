@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 type Model struct {
@@ -15,8 +16,7 @@ type Model struct {
 
 type Bn struct {
 	Symbol string `json:"symbol"`
-
-	Price string `json:"price"`
+	Price  string `json:"price"`
 }
 
 func Awesome(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +49,7 @@ func Awesome(w http.ResponseWriter, r *http.Request) {
 		goto ERR
 	}
 
-	model.Weather = string(body)
+	model.Weather = strings.Trim(string(body), "\n")
 
 	if body, err = json.Marshal(model); err != nil {
 		goto ERR

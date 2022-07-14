@@ -2,7 +2,9 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"strings"
 	"testing"
 
 	proto "tmpl-go-vercel/gen/go/api/hello/v1"
@@ -25,4 +27,10 @@ func Test_GrpcClient(t *testing.T) {
 	}
 
 	log.Println(resp)
+}
+
+func Test_Str(t *testing.T) {
+	str := "not found: ☀️   🌡️+47°F 🌬️↖2mph\n"
+	fmt.Println(str)
+	fmt.Println(strings.Trim(str, "\n"))
 }
