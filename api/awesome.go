@@ -9,12 +9,14 @@ import (
 
 type Model struct {
 	Bns     []Bn   `json:"bns"`
+	Ip      string `json:"ip"`
 	Weather string `json:"weather"`
 }
 
 type Bn struct {
 	Symbol string `json:"symbol"`
-	Price  string `json:"price"`
+
+	Price string `json:"price"`
 }
 
 func Awesome(w http.ResponseWriter, r *http.Request) {
@@ -27,8 +29,9 @@ func Awesome(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
 	model := &Model{Bns: []Bn{}}
+	model.Ip = r.RemoteAddr
 	binanceApi := "https://api.binance.com/api/v3/ticker/price?symbols=[%22BTCUSDT%22,%22ETHUSDT%22]"
-	weatherApi := fmt.Sprintf("https://wttr.in/%s?format=1", r.RemoteAddr)
+	weatherApi := fmt.Sprintf("https://wttr.in/%s?format=4", model.Ip)
 
 	if resp, err = http.Get(binanceApi); err != nil {
 		goto ERR

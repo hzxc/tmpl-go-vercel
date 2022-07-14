@@ -11,6 +11,7 @@ func MyInfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	resp := make(map[string]string)
 	resp["ip"] = r.RemoteAddr
+	resp["host"] = r.Host
 	resp["user-agent"] = r.UserAgent()
 	resp["accept-language"] = r.Header.Get("Accept-Language")
 	jsonResp, err := json.Marshal(resp)
