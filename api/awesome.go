@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -27,7 +28,7 @@ func Awesome(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	model := &Model{Bns: []Bn{}}
 	binanceApi := "https://api.binance.com/api/v3/ticker/price?symbols=[%22BTCUSDT%22,%22ETHUSDT%22]"
-	weatherApi := "https://wttr.in/?format=1"
+	weatherApi := fmt.Sprintf("https://wttr.in/%s?format=1", r.RemoteAddr)
 
 	if resp, err = http.Get(binanceApi); err != nil {
 		goto ERR
