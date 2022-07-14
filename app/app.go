@@ -22,7 +22,7 @@ func init() {
 		grpcSrv *grpcweb.WrappedGrpcServer
 	)
 
-	o := grpc.NewServerOptions(false, global.ZapLogger)
+	o := grpc.NewServerOptions(true, global.ZapLogger)
 
 	grpcSrv, err = o.New()
 	if err != nil {

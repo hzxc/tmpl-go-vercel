@@ -37,4 +37,8 @@ func init() {
 	global.PrivKey = jwt.ConvPrivKey(PrivKeyEnv)
 	PubKeyEnv := os.Getenv("JWT_PUBLIC_KEY")
 	global.PubKey = jwt.ConvPubKey(PubKeyEnv)
+
+	fmt.Println("init mysql")
+	global.PlanetscaleToken = os.Getenv("PLANETSCALE_TOKEN")
+
 }
