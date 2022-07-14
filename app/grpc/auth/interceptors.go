@@ -6,7 +6,7 @@ import (
 	"strings"
 	"tmpl-go-vercel/app/shared/auth/token"
 
-	wrapper_stream "tmpl-go-vercel/app/grpc/wrapper"
+	wrapper_stream "tmpl-go-vercel/app/grpc/wrapper/stream"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

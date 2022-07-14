@@ -4,20 +4,22 @@ import (
 	"net/http"
 	"tmpl-go-vercel/app/global"
 	"tmpl-go-vercel/app/grpc"
+
 	_ "tmpl-go-vercel/app/init"
 	_ "tmpl-go-vercel/app/services"
 
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"go.uber.org/zap"
 )
 
 var (
-	// handler http.HandlerFunc
-	grpcSrv grpc.Handler
+	handler http.HandlerFunc
 )
 
 func init() {
 	var (
-		err error
+		err     error
+		grpcSrv *grpcweb.WrappedGrpcServer
 	)
 
 	o := grpc.NewServerOptions(false, global.ZapLogger)
@@ -26,8 +28,12 @@ func init() {
 	if err != nil {
 		zap.L().Fatal(err.Error())
 	}
+
+	handler = func(w http.ResponseWriter, r *http.Request) {
+		grpcSrv.ServeHTTP(w, r)
+	}
 }
 
 func Handle(w http.ResponseWriter, r *http.Request) {
-	grpcSrv.ServeHTTP(w, r)
+	handler.ServeHTTP(w, r)
 }

@@ -8,16 +8,23 @@ plugins:
     out: ../gen/go
     opt:
       - paths=source_relative
-  - remote: buf.build/timostamm/plugins/protobuf-ts:v2.7.0-1
-    out: ../gen/node
-    opt:
-      - generate_dependencies
-      - server_none
-      - optimize_code_size
-      - client_generic
-      - output_typescript
-      - long_type_string
-      - eslint_disable
+  # - remote: buf.build/polarsignals/plugins/ts-protoc-gen:v0.15.0-1
+  #   out: ../gen/node
+  #   opt:
+  #     - paths=source_relative
+  #     - ts_out=service=true:./
+  #     - js_out=import_style=commonjs,binary:./
+  # - remote: buf.build/timostamm/plugins/protobuf-ts:v2.7.0-1
+  #   out: ../gen/node
+  #   opt:
+  #     - generate_dependencies
+  #     - server_none
+  #     - optimize_code_size
+  #     - client_generic
+  #     - output_typescript
+  #     - long_type_string
+  #     - eslint_disable
+  # buf.build/polarsignals/plugins/ts-protoc-gen
   # - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.10.3-1
   #   out: ../gen/go
   #   opt:

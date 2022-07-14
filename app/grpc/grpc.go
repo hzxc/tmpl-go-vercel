@@ -103,7 +103,7 @@ func (o ServerOptions) Config() (*server.Config, error) {
 	return config, nil
 }
 
-func (o ServerOptions) New() (Handler, error) {
+func (o ServerOptions) New() (*grpcweb.WrappedGrpcServer, error) {
 
 	config, err := o.Config()
 	if err != nil {
