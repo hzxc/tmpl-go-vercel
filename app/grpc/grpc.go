@@ -120,7 +120,7 @@ func (o ServerOptions) New() (*grpcweb.WrappedGrpcServer, error) {
 
 	return grpcweb.WrapServer(s, grpcweb.WithOriginFunc(func(origin string) bool {
 		// Allow all origins, DO NOT do this in production
-		if origin == "http://localhost:1234" {
+		if origin == "http://localhost:1234" || origin == "http://localhost:2345" {
 			return true
 		} else {
 			return false

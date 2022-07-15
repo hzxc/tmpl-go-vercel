@@ -50,7 +50,6 @@ func (s *Service) Login(c context.Context, req *proto.LoginRequest) (*proto.Logi
 		zap.L().Warn("username or password invalid", zap.Error(err))
 		return nil, status.Error(codes.InvalidArgument, "")
 	}
-
 	return &proto.LoginResponse{
 		Id:        1,
 		Name:      req.Username,
