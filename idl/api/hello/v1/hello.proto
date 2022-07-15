@@ -4,7 +4,8 @@ package api.hello.v1;
 option go_package="./hellopb;hellopb";
 
 service HelloService {
-     rpc Intro(IntroRequest) returns (IntroResponse) {}
+     rpc Intro(IntroRequest) returns (IntroResponse);
+     rpc Me(MeRequest) returns (MeResponse);
    }
 
 message IntroRequest {
@@ -13,4 +14,15 @@ message IntroRequest {
 
 message IntroResponse {
      string intro = 1;
+}
+
+message MeRequest{
+
+}
+
+message MeResponse{
+    int64 id = 1;
+    string name = 2;
+    string token = 3;
+    int64 expires_at = 4;
 }

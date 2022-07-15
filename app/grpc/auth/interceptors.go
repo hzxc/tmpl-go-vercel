@@ -46,7 +46,7 @@ func (a AccountID) String() string {
 
 type accountIDKey struct{}
 
-func tokenFromContext(c context.Context) (string, error) {
+func TokenFromContext(c context.Context) (string, error) {
 	unauthenticated := status.Error(codes.Unauthenticated, "token invalid")
 	m, ok := metadata.FromIncomingContext(c)
 	if !ok {
@@ -79,7 +79,7 @@ func AccountIDFromContext(c context.Context) (AccountID, error) {
 	v := c.Value(accountIDKey{})
 	aid, ok := v.(AccountID)
 	if !ok {
-		return "", status.Error(codes.Unauthenticated, codes.Unauthenticated.String())
+		return "", status.Error(codes.Unauthenticated, "account not found")
 	}
 	return aid, nil
 }
@@ -146,7 +146,7 @@ func StreamServerInterceptor(opts ...Option) grpc.StreamServerInterceptor {
 func auth(ctx context.Context, opts *options) (string, error) {
 	i := Interceptor(opts.pubKey)
 
-	tkn, err := tokenFromContext(ctx)
+	tkn, err := TokenFromContext(ctx)
 	if err != nil {
 		return "", err
 	}

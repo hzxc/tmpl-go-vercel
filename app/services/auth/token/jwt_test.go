@@ -28,7 +28,7 @@ func TestGenerateToken(t *testing.T) {
 	g.nowFunc = func() time.Time {
 		return time.Unix(1657714993, 0)
 	}
-	tkn, err := g.GenerateToken("username", time.Hour)
+	tkn, _, err := g.GenerateToken("username", time.Hour)
 	if err != nil {
 		t.Errorf("cannot generate token: %v", err)
 	}

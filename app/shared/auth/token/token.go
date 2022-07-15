@@ -38,3 +38,21 @@ func (v *JWTTokenVerifier) Verify(token string) (string, error) {
 
 	return clm.Subject, nil
 }
+
+func (v *JWTTokenVerifier) TokenExpiresAt(token string) (int64, error) {
+	t, err := jwt.ParseWithClaims(token, &jwt.RegisteredClaims{},
+		func(*jwt.Token) (interface{}, error) {
+			return v.PublicKey, nil
+		})
+
+	if err != nil {
+		return 0, fmt.Errorf("cannot parse token: %v", err)
+	}
+
+	clm, ok := t.Claims.(*jwt.RegisteredClaims)
+	if !ok {
+		return 0, fmt.Errorf("token claim is not RegisteredClaims")
+	}
+
+	return clm.ExpiresAt.Unix(), nil
+}

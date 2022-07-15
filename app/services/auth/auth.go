@@ -30,17 +30,18 @@ type Service struct {
 }
 
 type TokenGenerator interface {
-	GenerateToken(accountID string, expire time.Duration) (string, error)
+	GenerateToken(accountID string, expire time.Duration) (string, int64, error)
 }
 
 func (s *Service) Login(c context.Context, req *proto.LoginRequest) (*proto.LoginResponse, error) {
 	var (
-		tkn string
-		err error
+		tkn       string
+		err       error
+		expiresAt int64
 	)
 
 	if global.Config.Username == req.Username && global.Config.Password == req.Password {
-		tkn, err = s.TokenGenerator.GenerateToken(req.Username, s.TokenExpire)
+		tkn, expiresAt, err = s.TokenGenerator.GenerateToken(req.Username, s.TokenExpire)
 		if err != nil {
 			zap.L().Error("cannot generate token", zap.Error(err))
 			return nil, status.Error(codes.Internal, "")
@@ -51,7 +52,9 @@ func (s *Service) Login(c context.Context, req *proto.LoginRequest) (*proto.Logi
 	}
 
 	return &proto.LoginResponse{
-		AccessToken: tkn,
-		ExpiresIn:   int32(s.TokenExpire.Seconds()),
+		Id:        1,
+		Name:      req.Username,
+		Token:     tkn,
+		ExpiresAt: expiresAt,
 	}, nil
 }

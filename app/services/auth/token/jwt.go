@@ -24,15 +24,21 @@ func NewJWTTokenGen(issuer string, privateKey *rsa.PrivateKey) *JWTTokenGen {
 }
 
 // GenerateToken generates a token.
-func (t *JWTTokenGen) GenerateToken(sub string, expire time.Duration) (string, error) {
+func (t *JWTTokenGen) GenerateToken(sub string, expire time.Duration) (string, int64, error) {
 	t.nowFunc()
+	expiresAt := jwt.NewNumericDate(t.nowFunc().Add(expire))
 	tkn := jwt.NewWithClaims(jwt.SigningMethodRS512, jwt.RegisteredClaims{
 		Issuer:    t.issuer,
 		IssuedAt:  jwt.NewNumericDate(t.nowFunc()),
 		NotBefore: jwt.NewNumericDate(t.nowFunc()),
-		ExpiresAt: jwt.NewNumericDate(t.nowFunc().Add(expire)),
+		ExpiresAt: expiresAt,
 		Subject:   sub,
 	})
 
-	return tkn.SignedString(t.privateKey)
+	sign, err := tkn.SignedString(t.privateKey)
+	if err != nil {
+		return "", 0, err
+	}
+
+	return sign, expiresAt.Unix(), nil
 }

@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HelloServiceClient interface {
 	Intro(ctx context.Context, in *IntroRequest, opts ...grpc.CallOption) (*IntroResponse, error)
+	Me(ctx context.Context, in *MeRequest, opts ...grpc.CallOption) (*MeResponse, error)
 }
 
 type helloServiceClient struct {
@@ -38,11 +39,21 @@ func (c *helloServiceClient) Intro(ctx context.Context, in *IntroRequest, opts .
 	return out, nil
 }
 
+func (c *helloServiceClient) Me(ctx context.Context, in *MeRequest, opts ...grpc.CallOption) (*MeResponse, error) {
+	out := new(MeResponse)
+	err := c.cc.Invoke(ctx, "/api.hello.v1.HelloService/Me", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HelloServiceServer is the server API for HelloService service.
 // All implementations must embed UnimplementedHelloServiceServer
 // for forward compatibility
 type HelloServiceServer interface {
 	Intro(context.Context, *IntroRequest) (*IntroResponse, error)
+	Me(context.Context, *MeRequest) (*MeResponse, error)
 	mustEmbedUnimplementedHelloServiceServer()
 }
 
@@ -52,6 +63,9 @@ type UnimplementedHelloServiceServer struct {
 
 func (UnimplementedHelloServiceServer) Intro(context.Context, *IntroRequest) (*IntroResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Intro not implemented")
+}
+func (UnimplementedHelloServiceServer) Me(context.Context, *MeRequest) (*MeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Me not implemented")
 }
 func (UnimplementedHelloServiceServer) mustEmbedUnimplementedHelloServiceServer() {}
 
@@ -84,6 +98,24 @@ func _HelloService_Intro_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HelloService_Me_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HelloServiceServer).Me(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.hello.v1.HelloService/Me",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HelloServiceServer).Me(ctx, req.(*MeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HelloService_ServiceDesc is the grpc.ServiceDesc for HelloService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -94,6 +126,10 @@ var HelloService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Intro",
 			Handler:    _HelloService_Intro_Handler,
+		},
+		{
+			MethodName: "Me",
+			Handler:    _HelloService_Me_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

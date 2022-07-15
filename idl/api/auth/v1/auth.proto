@@ -8,8 +8,10 @@ message LoginRequest {
 }
 
 message LoginResponse {
-    string access_token = 1;
-    int32 expires_in = 2;
+    int64 id = 1;
+    string name = 2;
+    string token = 3;
+    int64 expires_at = 4;
 }
 
 service AuthService {
