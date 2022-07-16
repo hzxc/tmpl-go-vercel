@@ -12,6 +12,10 @@
   "devDependencies": {
     "eslint-config-prettier": "^8.5.0",
     "prettier": "^2.7.1",
+    "prisma": "^4.0.0",
     "vercel": "^27.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.0.0"
   }
 }

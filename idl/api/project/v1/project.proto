@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package api.project.v1;
+
+option go_package = "./projectpb;projectpb";
+
+service ProjectService { rpc List(ListRequest) returns (ListResponse); }
+
+message ListRequest {}
+
+message ListResponse { repeated Project data = 1; }
+
+message Project {
+  int32 id = 1;
+  string name = 2;
+  int32 person_id = 3;
+  bool pin = 4;
+  string organization = 5;
+  string description = 6;
+  int32 created = 7;
+}

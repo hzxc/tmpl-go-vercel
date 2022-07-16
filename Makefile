@@ -1,6 +1,4 @@
 GOPROXY:=$(shell go env GOPROXY)
-AUTH:= "app/auth/proto"
-PING:= "app/pingpong/proto"
 
 .PHONY:hello
 hello:
@@ -11,28 +9,20 @@ hello:
 go.proxy:
 	echo $(GOPROXY)
 
-.PHONY:auth.proto
-auth.proto:
-	protoc --go_out=$(AUTH) \
-	--go-grpc_out=$(AUTH) \
-	$(AUTH)/auth.proto
-
-.PHONY:ping.proto
-ping.proto:
-	protoc --go_out=$(PING) \
-	--go-grpc_out=$(PING) \
-	$(PING)/pingpong.proto
-
-.PHONY:proto
-proto:
-	protoc --go_out=proto \
-	--go-grpc_out=proto \
-	proto/conf.proto proto/job.proto proto/log.proto proto/order.proto proto/worker.proto
-
-.PHONY:build
-build: # linux下运行
+.PHONY:go.build
+go.build: # linux
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o user main/main.go
 
-.PHONY:install
+.PHONY:go.install
+go.install:
 	go install ./main/...
+
+.PHONY:mysql.docker
+mysql.docker:
+	docker container run --name mysql57 -p 3306:3306 \
+	-v G:/mysql/data:/var/lib/mysql \
+	-v G:/mysql/mysqld:/var/run/mysqld \
+	-v G:/mysql/my.cnf:/etc/mysql/my.cnf \
+	-e MYSQL_ROOT_PASSWORD=password \
+	-d mysql:5.7
 
