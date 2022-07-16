@@ -6,7 +6,7 @@
   "scripts": {
     "setup": "yarn vercel login && yarn vercel link",
     "start": "yarn vercel dev",
-    "dev": "yarn start"
+    "dev": "vercel dev"
   },
   "devDependencies": {
     "eslint-config-prettier": "^8.5.0",
