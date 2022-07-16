@@ -1,19 +1,17 @@
 syntax = "proto3";
 package api.auth.v1;
-option go_package="./authpb;authpb";
+option go_package = "./authpb;authpb";
 
 message LoginRequest {
-    string username = 1;
-    string password = 2;
+  string username = 1;
+  string password = 2;
 }
 
 message LoginResponse {
-    int32 id = 1;
-    string name = 2;
-    string token = 3;
-    int32 expires_at = 4;
+  int32 id = 1;
+  string name = 2;
+  string token = 3;
+  int32 expires_at = 4;
 }
 
-service AuthService {
-    rpc Login (LoginRequest) returns (LoginResponse);
-}
+service AuthService { rpc Login(LoginRequest) returns (LoginResponse); }

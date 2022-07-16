@@ -1,28 +1,23 @@
 syntax = "proto3";
 
 package api.hello.v1;
-option go_package="./hellopb;hellopb";
+
+option go_package = "./hellopb;hellopb";
 
 service HelloService {
-     rpc Intro(IntroRequest) returns (IntroResponse);
-     rpc Me(MeRequest) returns (MeResponse);
-   }
-
-message IntroRequest {
-     string name = 1;
+  rpc Intro(IntroRequest) returns (IntroResponse);
+  rpc Me(MeRequest) returns (MeResponse);
 }
 
-message IntroResponse {
-     string intro = 1;
-}
+message IntroRequest { string name = 1; }
 
-message MeRequest{
+message IntroResponse { string intro = 1; }
 
-}
+message MeRequest {}
 
-message MeResponse{
-     int32 id = 1;
-    string name = 2;
-    string token = 3;
-    int32 expires_at = 4;
+message MeResponse {
+  int32 id = 1;
+  string name = 2;
+  string token = 3;
+  int32 expires_at = 4;
 }

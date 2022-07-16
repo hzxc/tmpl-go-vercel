@@ -1,25 +1,22 @@
 syntax = "proto3";
 
 package api.healthcheck.v1;
-option go_package="./healthcheckpb;healthcheckpb";
+option go_package = "./healthcheckpb;healthcheckpb";
 
 service StatusService {
-    rpc Status(StatusRequest) returns (StatusResponse) {}
+  rpc Status(StatusRequest) returns (StatusResponse) {}
 }
 
-message StatusRequest {
-}
+message StatusRequest {}
 
-message StatusResponse {
-  Version version = 1;
-}
+message StatusResponse { Version version = 1; }
 
 message Version {
-  string name              = 1;
-  string version           = 2;
-  string version_strategy  = 3;
-  string commit_hash       = 6;
-  string git_branch        = 7;
-  string git_tag           = 8;
-  string commit_timestamp  = 9;
+  string name = 1;
+  string version = 2;
+  string version_strategy = 3;
+  string commit_hash = 6;
+  string git_branch = 7;
+  string git_tag = 8;
+  string commit_timestamp = 9;
 }
