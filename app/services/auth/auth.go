@@ -54,6 +54,6 @@ func (s *Service) Login(c context.Context, req *proto.LoginRequest) (*proto.Logi
 		Id:        1,
 		Name:      req.Username,
 		Token:     tkn,
-		ExpiresAt: expiresAt,
+		ExpiresAt: int32(expiresAt),
 	}, nil
 }

@@ -55,6 +55,6 @@ func (s *Service) Me(ctx context.Context, req *proto.MeRequest) (*proto.MeRespon
 		Id:        1,
 		Name:      aid.String(),
 		Token:     tkn,
-		ExpiresAt: expiresAt,
+		ExpiresAt: int32(expiresAt),
 	}, nil
 }
