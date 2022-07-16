@@ -1,6 +1,5 @@
 {
   "name": "tmpl-go-vercel",
-  "packageManager": "yarn@3.2.1",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
