@@ -19,5 +19,6 @@ model Project {
   personId     Int
   organization String
   description  String?
-  created      DateTime
+  created_at   DateTime
+  updated_at   DateTime
 }

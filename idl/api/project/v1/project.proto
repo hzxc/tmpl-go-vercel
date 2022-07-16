@@ -4,7 +4,58 @@ package api.project.v1;
 
 option go_package = "./projectpb;projectpb";
 
-service ProjectService { rpc List(ListRequest) returns (ListResponse); }
+service ProjectService {
+  rpc List(ListRequest) returns (ListResponse);
+  rpc Create(CreateRequest) returns (CreateResponse);
+  rpc Edit(EditRequest) returns (EditResponse);
+  rpc Delete(DeleteRequest) returns (DeleteResponse);
+}
+
+message DeleteRequest { int32 id = 1; }
+
+message DeleteResponse {
+  int32 id = 1;
+  string name = 2;
+}
+
+message EditRequest {
+  int32 id = 1;
+  string name = 2;
+  int32 person_id = 3;
+  bool pin = 4;
+  string organization = 5;
+  string description = 6;
+}
+
+message EditResponse {
+  int32 id = 1;
+  string name = 2;
+  int32 person_id = 3;
+  bool pin = 4;
+  string organization = 5;
+  string description = 6;
+  int32 created_at = 7;
+  int32 updated_at = 8;
+}
+
+message CreateRequest {
+  string name = 1;
+  int32 person_id = 2;
+  bool pin = 3;
+  string organization = 4;
+  string description = 5;
+}
+
+message CreateResponse {
+  int32 id = 1;
+  string name = 2;
+  int32 person_id = 3;
+  bool pin = 4;
+  string organization = 5;
+  string description = 6;
+  int32 created_at = 7;
+  int32 updated_at = 8;
+}
 
 message ListRequest {}
 
@@ -17,5 +68,6 @@ message Project {
   bool pin = 4;
   string organization = 5;
   string description = 6;
-  int32 created = 7;
+  int32 created_at = 7;
+  int32 updated_at = 8;
 }
