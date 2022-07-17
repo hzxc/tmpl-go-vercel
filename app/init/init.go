@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"tmpl-go-vercel/app/global"
+	"tmpl-go-vercel/app/shared/mysql"
 
 	"go.uber.org/zap"
 
@@ -39,6 +40,8 @@ func init() {
 	global.PubKey = jwt.ConvPubKey(PubKeyEnv)
 
 	fmt.Println("init mysql")
-	global.PlanetscaleToken = os.Getenv("PLANETSCALE_TOKEN")
-
+	global.MysqlDsn = os.Getenv("DATABASE_URL")
+	if global.Db, err = mysql.NewDb(); err != nil {
+		zap.L().Fatal(err.Error())
+	}
 }

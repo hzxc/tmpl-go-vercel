@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type GlobalConfig struct {
@@ -14,9 +15,10 @@ type GlobalConfig struct {
 }
 
 var (
-	Config           *GlobalConfig
-	ZapLogger        *zap.Logger
-	PubKey           *rsa.PublicKey
-	PrivKey          *rsa.PrivateKey
-	PlanetscaleToken string
+	Config    *GlobalConfig
+	ZapLogger *zap.Logger
+	PubKey    *rsa.PublicKey
+	PrivKey   *rsa.PrivateKey
+	MysqlDsn  string
+	Db        *gorm.DB
 )

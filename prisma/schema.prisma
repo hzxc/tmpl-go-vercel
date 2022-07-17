@@ -22,3 +22,10 @@ model Project {
   created_at   DateTime
   updated_at   DateTime
 }
+
+model Person {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  created_at DateTime
+  updated_at DateTime
+}

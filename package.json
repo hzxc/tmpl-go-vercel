@@ -4,9 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "setup": "yarn vercel login && yarn vercel link",
-    "start": "yarn vercel dev",
-    "dev": "vercel dev"
+    "setup": "yarn vercel login && yarn vercel link"
   },
   "devDependencies": {
     "eslint-config-prettier": "^8.5.0",

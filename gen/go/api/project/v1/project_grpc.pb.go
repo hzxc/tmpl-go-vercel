@@ -22,6 +22,7 @@ type ProjectServiceClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	Edit(ctx context.Context, in *EditRequest, opts ...grpc.CallOption) (*EditResponse, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
+	PersonList(ctx context.Context, in *PersonListRequest, opts ...grpc.CallOption) (*PersonListResponse, error)
 }
 
 type projectServiceClient struct {
@@ -68,6 +69,15 @@ func (c *projectServiceClient) Delete(ctx context.Context, in *DeleteRequest, op
 	return out, nil
 }
 
+func (c *projectServiceClient) PersonList(ctx context.Context, in *PersonListRequest, opts ...grpc.CallOption) (*PersonListResponse, error) {
+	out := new(PersonListResponse)
+	err := c.cc.Invoke(ctx, "/api.project.v1.ProjectService/PersonList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProjectServiceServer is the server API for ProjectService service.
 // All implementations must embed UnimplementedProjectServiceServer
 // for forward compatibility
@@ -76,6 +86,7 @@ type ProjectServiceServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	Edit(context.Context, *EditRequest) (*EditResponse, error)
 	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
+	PersonList(context.Context, *PersonListRequest) (*PersonListResponse, error)
 	mustEmbedUnimplementedProjectServiceServer()
 }
 
@@ -94,6 +105,9 @@ func (UnimplementedProjectServiceServer) Edit(context.Context, *EditRequest) (*E
 }
 func (UnimplementedProjectServiceServer) Delete(context.Context, *DeleteRequest) (*DeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedProjectServiceServer) PersonList(context.Context, *PersonListRequest) (*PersonListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PersonList not implemented")
 }
 func (UnimplementedProjectServiceServer) mustEmbedUnimplementedProjectServiceServer() {}
 
@@ -180,6 +194,24 @@ func _ProjectService_Delete_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProjectService_PersonList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PersonListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).PersonList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.project.v1.ProjectService/PersonList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).PersonList(ctx, req.(*PersonListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProjectService_ServiceDesc is the grpc.ServiceDesc for ProjectService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -202,6 +234,10 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _ProjectService_Delete_Handler,
+		},
+		{
+			MethodName: "PersonList",
+			Handler:    _ProjectService_PersonList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
