@@ -9,7 +9,7 @@ import (
 
 	"go.uber.org/zap"
 
-	jwt "tmpl-go-vercel/app/utils"
+	"tmpl-go-vercel/app/utils/jwt"
 )
 
 func init() {

@@ -36,16 +36,16 @@ func (s *Service) List(ctx context.Context, req *proto.ListRequest) (*proto.List
 		return nil, status.Error(codes.Internal, result.Error.Error())
 	}
 
-	jsonData, err := json.Marshal(projects)
+	jsonData, err := json.Marshal(&projects)
 
 	if err != nil {
-		return nil, status.Error(codes.Internal, result.Error.Error())
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	data := []*proto.Project{}
 
 	if err = json.Unmarshal(jsonData, &data); err != nil {
-		return nil, status.Error(codes.Internal, result.Error.Error())
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &proto.ListResponse{
@@ -76,8 +76,8 @@ func (s *Service) Create(ctx context.Context, req *proto.CreateRequest) (*proto.
 		PersonId:     int32(project.ID),
 		Organization: project.Organization,
 		Description:  project.Description,
-		CreatedAt:    int32(project.CreatedAt.Unix()),
-		UpdatedAt:    int32(project.UpdatedAt.Unix()),
+		CreatedAt:    project.CreatedAt.Unix(),
+		UpdatedAt:    project.UpdatedAt.Unix(),
 	}, nil
 }
 
