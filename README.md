@@ -14,4 +14,4 @@ https://logtail.com/
 
 # planetscale
 
-planetscale.com
+https://planetscale.com

@@ -9,11 +9,11 @@ service ProjectService {
   rpc Create(CreateRequest) returns (CreateResponse);
   rpc Edit(EditRequest) returns (EditResponse);
   rpc Delete(DeleteRequest) returns (DeleteResponse);
-  rpc PersonList(PersonListRequest) returns (PersonListResponse);
+  rpc People(PeopleRequest) returns (PeopleResponse);
 }
 
-message PersonListRequest {}
-message PersonListResponse { repeated Person data = 1; }
+message PeopleRequest {}
+message PeopleResponse { repeated Person data = 1; }
 
 message Person {
   int32 id = 1;

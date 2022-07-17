@@ -21,6 +21,7 @@ func init() {
 		fmt.Sprintf("/%s/Create", proto.ProjectService_ServiceDesc.ServiceName),
 		fmt.Sprintf("/%s/Edit", proto.ProjectService_ServiceDesc.ServiceName),
 		fmt.Sprintf("/%s/Delete", proto.ProjectService_ServiceDesc.ServiceName),
+		fmt.Sprintf("/%s/People", proto.ProjectService_ServiceDesc.ServiceName),
 	)
 }
 
@@ -89,6 +90,27 @@ func (s *Service) Delete(ctx context.Context, req *proto.DeleteRequest) (*proto.
 	return &proto.DeleteResponse{}, nil
 }
 
-func (s *Service) PersonList(ctx context.Context, req *proto.PersonListRequest) (*proto.PersonListResponse, error) {
-	return &proto.PersonListResponse{}, nil
+func (s *Service) People(ctx context.Context, req *proto.PeopleRequest) (*proto.PeopleResponse, error) {
+	db := global.Db
+	people := []model.Person{}
+	result := db.Find(&people)
+	if result.Error != nil {
+		return nil, status.Error(codes.Internal, result.Error.Error())
+	}
+
+	jsonData, err := json.Marshal(&people)
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	data := []*proto.Person{}
+
+	if err = json.Unmarshal(jsonData, &data); err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &proto.PeopleResponse{
+		Data: data,
+	}, nil
 }
