@@ -40,7 +40,12 @@ func init() {
 	global.PubKey = jwt.ConvPubKey(PubKeyEnv)
 
 	fmt.Println("init mysql")
-	global.MysqlDsn = os.Getenv("DATABASE_URL")
+	if global.Config.Dev {
+		global.MysqlDsn = os.Getenv("DATABASE_URL_DEV")
+	} else {
+		global.MysqlDsn = os.Getenv("DATABASE_URL")
+	}
+
 	if global.Db, err = mysql.NewDb(); err != nil {
 		zap.L().Fatal(err.Error())
 	}

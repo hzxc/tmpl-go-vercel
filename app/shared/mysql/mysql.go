@@ -16,6 +16,7 @@ func NewDb() (*gorm.DB, error) {
 		dsn string
 	)
 	dev := global.Config.Dev
+	local := global.Config.Local
 	logLv := logger.Warn
 	colorful := false
 	if dev {
@@ -33,7 +34,7 @@ func NewDb() (*gorm.DB, error) {
 		},
 	)
 
-	if dev {
+	if local {
 		dsn = "tcp(localhost:3309)/db?charset=utf8mb4&parseTime=True&loc=Local"
 	} else {
 		dsn = global.MysqlDsn

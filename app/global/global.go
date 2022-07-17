@@ -12,6 +12,7 @@ type GlobalConfig struct {
 	Username string `mapstructure:"username" json:"username"`
 	Password string `mapstructure:"password" json:"password"`
 	Dev      bool   `mapstructure:"dev" json:"dev"`
+	Local    bool   `mapstructure:"local" json:"local"`
 }
 
 var (
