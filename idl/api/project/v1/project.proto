@@ -66,7 +66,10 @@ message CreateResponse {
   int32 updated_at = 8;
 }
 
-message ListRequest {}
+message ListRequest {
+  optional string name = 1;
+  optional int32 person_id = 2;
+}
 
 message ListResponse { repeated Project data = 1; }
 

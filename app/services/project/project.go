@@ -10,6 +10,7 @@ import (
 
 	proto "tmpl-go-vercel/gen/go/api/project/v1"
 
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -35,6 +36,22 @@ func (s *Service) List(ctx context.Context, req *proto.ListRequest) (*proto.List
 	result := db.Find(&projects)
 	if result.Error != nil {
 		return nil, status.Error(codes.Internal, result.Error.Error())
+	}
+	zap.L().Debug("DEBUG")
+	zap.S().Debugf("req.name:%s,req.personId:%d", req.Name, req.PersonId)
+
+	if req.Name != nil && *req.Name != "" {
+		result = result.Where("name LIKE ?", "%"+*req.Name+"%").Find(&projects)
+		if result.Error != nil {
+			return nil, status.Error(codes.Internal, result.Error.Error())
+		}
+	}
+
+	if req.PersonId != nil {
+		result = result.Where("person_id = ?", req.PersonId).Find(&projects)
+		if result.Error != nil {
+			return nil, status.Error(codes.Internal, result.Error.Error())
+		}
 	}
 
 	jsonData, err := json.Marshal(&projects)
