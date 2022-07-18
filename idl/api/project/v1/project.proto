@@ -22,30 +22,18 @@ message Person {
 
 message DeleteRequest { int32 id = 1; }
 
-message DeleteResponse {
-  int32 id = 1;
-  string name = 2;
-}
+message DeleteResponse { int32 id = 1; }
 
 message EditRequest {
   int32 id = 1;
-  string name = 2;
-  int32 person_id = 3;
-  bool pin = 4;
-  string organization = 5;
-  string description = 6;
+  optional string name = 2;
+  optional int32 person_id = 3;
+  optional bool pin = 4;
+  optional string organization = 5;
+  optional string description = 6;
 }
 
-message EditResponse {
-  int32 id = 1;
-  string name = 2;
-  int32 person_id = 3;
-  bool pin = 4;
-  string organization = 5;
-  string description = 6;
-  int32 created_at = 7;
-  int32 updated_at = 8;
-}
+message EditResponse { int32 id = 1; }
 
 message CreateRequest {
   string name = 1;

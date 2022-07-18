@@ -15,6 +15,9 @@ require (
 require (
 	github.com/cenkalti/backoff/v4 v4.1.1 // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
+	github.com/devfeel/mapper v0.7.10 // indirect
+	github.com/dranikpg/dto-mapper v0.1.1 // indirect
+	github.com/fatih/structs v1.1.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect

@@ -10,7 +10,7 @@ import (
 
 	proto "tmpl-go-vercel/gen/go/api/project/v1"
 
-	"go.uber.org/zap"
+	"github.com/devfeel/mapper"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -37,8 +37,6 @@ func (s *Service) List(ctx context.Context, req *proto.ListRequest) (*proto.List
 	if result.Error != nil {
 		return nil, status.Error(codes.Internal, result.Error.Error())
 	}
-	zap.L().Debug("DEBUG")
-	zap.S().Debugf("req.name:%s,req.personId:%d", req.Name, req.PersonId)
 
 	if req.Name != nil && *req.Name != "" {
 		result = result.Where("name LIKE ?", "%"+*req.Name+"%").Find(&projects)
@@ -100,11 +98,72 @@ func (s *Service) Create(ctx context.Context, req *proto.CreateRequest) (*proto.
 }
 
 func (s *Service) Edit(ctx context.Context, req *proto.EditRequest) (*proto.EditResponse, error) {
-	return &proto.EditResponse{}, nil
+
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "")
+	}
+	db := global.Db
+	project := model.Project{}
+
+	project.ID = uint(req.Id)
+
+	if req.Name != nil {
+		project.Name = *req.Name
+	}
+
+	// zap.S().Debugf("req:%v", req)
+
+	// if req.Pin != nil {
+	// 	project.Pin = *req.Pin
+	// }
+
+	// if req.PersonId != nil {
+	// 	project.PersonId = uint(*req.PersonId)
+	// }
+	// if req.Organization != nil {
+	// 	project.Organization = *req.Organization
+	// }
+
+	// if req.Description != nil {
+	// 	project.Description = *req.Description
+	// }
+
+	jsonData, err := json.Marshal(req)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	m := mapper.NewMapper()
+	mapData := map[string]interface{}{}
+	err = m.JsonToMap(jsonData, &mapData)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	// zap.S().Debugf("mapData:%v", mapData)
+	result := db.Model(&project).Updates(mapData)
+
+	if result.Error != nil {
+		return nil, status.Error(codes.Internal, result.Error.Error())
+	}
+
+	return &proto.EditResponse{
+		Id: int32(project.ID),
+	}, nil
 }
 
 func (s *Service) Delete(ctx context.Context, req *proto.DeleteRequest) (*proto.DeleteResponse, error) {
-	return &proto.DeleteResponse{}, nil
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "")
+	}
+
+	result := global.Db.Delete(&model.Project{}, req.Id)
+
+	if result.Error != nil {
+		return nil, status.Error(codes.Internal, "")
+	}
+
+	return &proto.DeleteResponse{
+		Id: req.Id,
+	}, nil
 }
 
 func (s *Service) People(ctx context.Context, req *proto.PeopleRequest) (*proto.PeopleResponse, error) {
