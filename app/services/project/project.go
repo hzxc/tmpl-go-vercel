@@ -182,7 +182,7 @@ func (s *Service) Delete(ctx context.Context, req *proto.DeleteRequest) (*proto.
 		return nil, status.Error(codes.InvalidArgument, "")
 	}
 
-	result := global.Db.Delete(&model.Project{}, req.Id)
+	result := global.Db.Unscoped().Delete(&model.Project{}, req.Id)
 
 	if result.Error != nil {
 		return nil, status.Error(codes.Internal, "")
