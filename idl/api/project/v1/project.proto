@@ -5,11 +5,23 @@ package api.project.v1;
 option go_package = "./projectpb;projectpb";
 
 service ProjectService {
+  rpc Project(ProjectRequest) returns (ProjectResponse);
   rpc List(ListRequest) returns (ListResponse);
   rpc Create(CreateRequest) returns (CreateResponse);
   rpc Edit(EditRequest) returns (EditResponse);
   rpc Delete(DeleteRequest) returns (DeleteResponse);
   rpc People(PeopleRequest) returns (PeopleResponse);
+}
+
+message ProjectRequest { int32 id = 1; }
+
+message ProjectResponse {
+  int32 id = 1;
+  string name = 2;
+  int32 person_id = 3;
+  bool pin = 4;
+  string organization = 5;
+  string description = 6;
 }
 
 message PeopleRequest {}

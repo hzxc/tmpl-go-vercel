@@ -18,6 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProjectServiceClient interface {
+	Project(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectResponse, error)
 	List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	Edit(ctx context.Context, in *EditRequest, opts ...grpc.CallOption) (*EditResponse, error)
@@ -31,6 +32,15 @@ type projectServiceClient struct {
 
 func NewProjectServiceClient(cc grpc.ClientConnInterface) ProjectServiceClient {
 	return &projectServiceClient{cc}
+}
+
+func (c *projectServiceClient) Project(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectResponse, error) {
+	out := new(ProjectResponse)
+	err := c.cc.Invoke(ctx, "/api.project.v1.ProjectService/Project", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *projectServiceClient) List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error) {
@@ -82,6 +92,7 @@ func (c *projectServiceClient) People(ctx context.Context, in *PeopleRequest, op
 // All implementations must embed UnimplementedProjectServiceServer
 // for forward compatibility
 type ProjectServiceServer interface {
+	Project(context.Context, *ProjectRequest) (*ProjectResponse, error)
 	List(context.Context, *ListRequest) (*ListResponse, error)
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	Edit(context.Context, *EditRequest) (*EditResponse, error)
@@ -94,6 +105,9 @@ type ProjectServiceServer interface {
 type UnimplementedProjectServiceServer struct {
 }
 
+func (UnimplementedProjectServiceServer) Project(context.Context, *ProjectRequest) (*ProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Project not implemented")
+}
 func (UnimplementedProjectServiceServer) List(context.Context, *ListRequest) (*ListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
 }
@@ -120,6 +134,24 @@ type UnsafeProjectServiceServer interface {
 
 func RegisterProjectServiceServer(s grpc.ServiceRegistrar, srv ProjectServiceServer) {
 	s.RegisterService(&ProjectService_ServiceDesc, srv)
+}
+
+func _ProjectService_Project_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).Project(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.project.v1.ProjectService/Project",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).Project(ctx, req.(*ProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ProjectService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -219,6 +251,10 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "api.project.v1.ProjectService",
 	HandlerType: (*ProjectServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Project",
+			Handler:    _ProjectService_Project_Handler,
+		},
 		{
 			MethodName: "List",
 			Handler:    _ProjectService_List_Handler,

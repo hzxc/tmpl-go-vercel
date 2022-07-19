@@ -23,11 +23,35 @@ func init() {
 		fmt.Sprintf("/%s/Edit", proto.ProjectService_ServiceDesc.ServiceName),
 		fmt.Sprintf("/%s/Delete", proto.ProjectService_ServiceDesc.ServiceName),
 		fmt.Sprintf("/%s/People", proto.ProjectService_ServiceDesc.ServiceName),
+		fmt.Sprintf("/%s/Project", proto.ProjectService_ServiceDesc.ServiceName),
 	)
 }
 
 type Service struct {
 	proto.UnimplementedProjectServiceServer
+}
+
+func (s *Service) Project(ctx context.Context, req *proto.ProjectRequest) (*proto.ProjectResponse, error) {
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "")
+	}
+
+	project := model.Project{}
+
+	db := global.Db
+	db = db.First(&project, req.Id)
+	if db.Error != nil {
+		return nil, status.Error(codes.Internal, "")
+	}
+
+	return &proto.ProjectResponse{
+		Id:           int32(project.ID),
+		Name:         project.Name,
+		PersonId:     int32(project.PersonId),
+		Pin:          project.Pin,
+		Organization: project.Organization,
+		Description:  project.Description,
+	}, nil
 }
 
 func (s *Service) List(ctx context.Context, req *proto.ListRequest) (*proto.ListResponse, error) {
@@ -138,6 +162,9 @@ func (s *Service) Edit(ctx context.Context, req *proto.EditRequest) (*proto.Edit
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
+
+	// zap.S().Debugf("mapData:%v", mapData)
+	delete(mapData, "id")
 	// zap.S().Debugf("mapData:%v", mapData)
 	result := db.Model(&project).Updates(mapData)
 
